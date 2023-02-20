@@ -23,7 +23,7 @@ async fn main() {
     let mut opt = true;
     while opt {
         let mut choice = String::new();
-        println!("- - - - - -\n1.Insert record\n2.View record\n3.Update record\n4.Delete record\n5.Exit\n- - - - - -\nSelect one option:");
+        println!("- - - - - -\n1.Insert record\n2.Check record\n3.Update record\n4.Delete record\n5.Exit\n- - - - - -\nSelect one option:");
         io::stdin().read_line(&mut choice).expect("Not found");
         match choice.as_str().trim() {
             "1" => connection::conn_str().await,
