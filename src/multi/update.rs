@@ -78,20 +78,6 @@ pub async fn update_str() {
             _ => println!("Please select one option."),
         }
     }
-
-    // let update_result = data
-    //     .update_one(
-    //         doc! {
-    //            "_id": &fetch.get("_id")
-    //         },
-    //         doc! {
-    //            "$set": { "address": usradd.to_string() }
-    //         },
-    //         None,
-    //     )
-    //     .await
-    //     .expect("Error found");
-    // println!("Updated {} document", update_result.modified_count);
 }
 
 pub async fn delete_str() {
