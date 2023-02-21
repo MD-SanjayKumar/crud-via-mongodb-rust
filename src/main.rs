@@ -18,9 +18,9 @@ pub struct Details {
     username: String,
     name: String,
     address: String,
-    //#[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
-    //datetime: chrono::DateTime<Utc>,
-    datetime: String
+    // #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
+    // datetime: chrono::DateTime<Utc>,
+    datetime: String,
 }
 
 #[tokio::main]
