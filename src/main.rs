@@ -14,6 +14,7 @@ mod update;
 pub struct Details {
     #[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
     id: Option<ObjectId>,
+    username: String,
     name: String,
     address: String,
 }

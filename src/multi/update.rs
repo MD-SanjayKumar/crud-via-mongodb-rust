@@ -18,37 +18,80 @@ pub async fn update_str() {
     let client = Client::with_options(client_option).expect("Not found");
     let data: mongodb::Collection<Document> =
         client.database("crud_operation").collection("details");
+    let mut usrname = String::new();
     let mut usrnm = String::new();
     let mut usradd = String::new();
-    println!("Enter name :");
-    io::stdin().read_line(&mut usrnm).expect("Not found");
-    println!("Enter new address :");
-    io::stdin().read_line(&mut usradd).expect("Not found");
-
+    println!("Enter username :");
+    io::stdin().read_line(&mut usrname).expect("Not found");
     let fetch: Document = data
         .find_one(
             doc! {
-                  "name": usrnm.to_string()
+                  "username": usrname.to_string()
             },
             None,
         )
         .await
         .expect("error found")
         .expect("Missing 'Parasite' document.");
+    let mut case_match = true;
+    while case_match {
+        let mut v = String::new();
+        println!("- - - - - -\n1.Update name\n2.Update address\n- - - - - -\nSelect one option:");
+        io::stdin().read_line(&mut v).expect("Not found");
+        match v.as_str().trim() {
+            "1" => {
+                println!("Enter new name :");
+                io::stdin().read_line(&mut usrnm).expect("Not found");
+                let update_result = data
+                    .update_one(
+                        doc! {
+                           "_id": &fetch.get("_id")
+                        },
+                        doc! {
+                           "$set": { "name": usrnm.to_string() }
+                        },
+                        None,
+                    )
+                    .await
+                    .expect("Error found");
+                println!("Name updated successfully.\nUpdated {} document", update_result.modified_count);
+                case_match = false;
+            }
+            "2" => {
+                println!("Enter new address :");
+                io::stdin().read_line(&mut usradd).expect("Not found");
+                let update_result = data
+                    .update_one(
+                        doc! {
+                           "_id": &fetch.get("_id")
+                        },
+                        doc! {
+                           "$set": { "address": usradd.to_string() }
+                        },
+                        None,
+                    )
+                    .await
+                    .expect("Error found");
+                println!("Address updated successfully.\nUpdated {} document", update_result.modified_count);
+                case_match = false;
+            }
+            _ => println!("Please select one option."),
+        }
+    }
 
-    let update_result = data
-        .update_one(
-            doc! {
-               "_id": &fetch.get("_id")
-            },
-            doc! {
-               "$set": { "address": usradd.to_string() }
-            },
-            None,
-        )
-        .await
-        .expect("Error found");
-    println!("Updated {} document", update_result.modified_count);
+    // let update_result = data
+    //     .update_one(
+    //         doc! {
+    //            "_id": &fetch.get("_id")
+    //         },
+    //         doc! {
+    //            "$set": { "address": usradd.to_string() }
+    //         },
+    //         None,
+    //     )
+    //     .await
+    //     .expect("Error found");
+    // println!("Updated {} document", update_result.modified_count);
 }
 
 pub async fn delete_str() {
@@ -61,22 +104,22 @@ pub async fn delete_str() {
     let client = Client::with_options(client_option).expect("Not found");
     let data: mongodb::Collection<Document> =
         client.database("crud_operation").collection("details");
-    let mut usrnm = String::new();
-    println!("Enter name :");
-    io::stdin().read_line(&mut usrnm).expect("Not found");
+    let mut usrname = String::new();
+    println!("Enter username :");
+    io::stdin().read_line(&mut usrname).expect("Not found");
 
     let delete_result = data
         .delete_many(
             doc! {
-               "name": usrnm.to_string()
+               "username": usrname.to_string()
             },
             None,
         )
         .await
         .expect("Error found");
     println!(
-        "All records with name :{} are deleted.\nDeleted {} documents",
-        usrnm.to_string(),
+        "Records for {} deleted.\nDeleted {} documents",
+        usrname.to_string(),
         delete_result.deleted_count
     );
 }

@@ -18,8 +18,12 @@ pub async fn conn_str() {
     let client = Client::with_options(client_option).expect("Not found");
     let data: mongodb::Collection<Document> =
         client.database("crud_operation").collection("details");
+
     let mut usrnm = String::new();
     let mut usradd = String::new();
+    let mut usrname = String::new();
+    println!("Enter username :");
+    io::stdin().read_line(&mut usrname).expect("Not found");
     println!("Enter name :");
     io::stdin().read_line(&mut usrnm).expect("Not found");
     println!("Enter address :");
@@ -28,6 +32,7 @@ pub async fn conn_str() {
     //insert
     let detail = Details {
         id: None,
+        username: usrname,
         name: usrnm,
         address: usradd,
     };
@@ -56,14 +61,14 @@ pub async fn fetch_data() {
     let client = Client::with_options(client_option).expect("Not found");
     let data: mongodb::Collection<Document> =
         client.database("crud_operation").collection("details");
-    let mut usrnm = String::new();
-    println!("Enter name :");
-    io::stdin().read_line(&mut usrnm).expect("Not found");
+    let mut usrname = String::new();
+    println!("Enter username :");
+    io::stdin().read_line(&mut usrname).expect("Not found");
     //     //fetch
     let fetch: Document = data
         .find_one(
             doc! {
-                  "name": usrnm.to_string()
+                  "username": usrname.to_string()
             },
             None,
         )
