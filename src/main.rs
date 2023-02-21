@@ -9,6 +9,7 @@ use std::io;
 mod connection;
 #[path = "multi/update.rs"]
 mod update;
+use chrono::prelude::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Details {
@@ -17,6 +18,8 @@ pub struct Details {
     username: String,
     name: String,
     address: String,
+    #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
+    datetime: chrono::DateTime<Utc>,
 }
 
 #[tokio::main]

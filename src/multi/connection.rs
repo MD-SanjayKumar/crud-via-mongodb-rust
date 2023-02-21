@@ -7,6 +7,7 @@ use mongodb::{
 };
 use mongoose::Document;
 use std::{fmt::format, io};
+use crate::Utc;
 
 pub async fn conn_str() {
     let client_option = ClientOptions::parse_with_resolver_config(
@@ -28,13 +29,14 @@ pub async fn conn_str() {
     io::stdin().read_line(&mut usrnm).expect("Not found");
     println!("Enter address :");
     io::stdin().read_line(&mut usradd).expect("Not found");
-
+     
     //insert
     let detail = Details {
         id: None,
         username: usrname,
         name: usrnm,
         address: usradd,
+        datetime : Utc::now(),
     };
 
     let sDetails = bson::to_bson(&detail).expect("Found error");
