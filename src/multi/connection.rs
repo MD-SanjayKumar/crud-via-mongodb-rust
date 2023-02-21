@@ -67,45 +67,49 @@ pub async fn conn_str() {
                 .expect("Retrieved _id should have been of type ObjectId");
             println!("Record Inserted\n(Document ID: {:?})", sid);
         } else {
-            let fetch: Document = data
-                .find_one(
-                    doc! {
-                          "username": usrname.to_string()
-                    },
-                    None,
-                )
-                .await
-                .expect("error found")
-                .expect("Missing 'Parasite' document.");
-            if fetch.get_str("username").unwrap().trim() == usrname.to_string().trim() {
-                println!("Username is already taken.");
-            } else {
-                //insert
-                let detail = Details {
-                    id: None,
-                    username: usrname,
-                    name: usrnm,
-                    address: usradd,
-                    //datetime: Utc::now(),
-                    datetime: res.to_string(),
-                };
+            match data
+            .find_one(
+                doc! {
+                      "username": usrname.to_string()
+                },
+                None,
+            )
+            .await {
+                Ok(v) => {
+                    match v {
+                        Some(k) => println!("Username already exists."),
+                        None => { 
+                            let detail = Details {
+                                id: None,
+                                username: usrname,
+                                name: usrnm,
+                                address: usradd,
+                                //datetime: Utc::now(),
+                                datetime: res.to_string(),
+                            };
+            
+                            let sDetails = bson::to_bson(&detail).expect("Found error");
+                            let docs = sDetails.as_document().unwrap();
+            
+                            let result = data
+                                .insert_one(docs.to_owned(), None)
+                                .await
+                                .expect("Found error");
+                            let sid = result
+                                .inserted_id
+                                .as_object_id()
+                                .expect("Retrieved _id should have been of type ObjectId");
+                            println!("Record Inserted\n(Document ID: {:?})", sid);
+                        }  
 
-                let sDetails = bson::to_bson(&detail).expect("Found error");
-                let docs = sDetails.as_document().unwrap();
-
-                let result = data
-                    .insert_one(docs.to_owned(), None)
-                    .await
-                    .expect("Found error");
-                let sid = result
-                    .inserted_id
-                    .as_object_id()
-                    .expect("Retrieved _id should have been of type ObjectId");
-                println!("Record Inserted\n(Document ID: {:?})", sid);
-            }
+                        }
+                    }
+                Err(e) => println!("Found some error")
         }
     }
+    }
 }
+
 
 pub async fn fetch_data() {
     let client_option = ClientOptions::parse_with_resolver_config(
@@ -132,9 +136,8 @@ pub async fn fetch_data() {
                 },
                 None,
             )
-            .await
-            .expect("error found")
-            .expect("Missing 'Parasite' document.");
+            .await.unwrap()
+            .expect("error found");
         println!(
             "Details -\nName :{:?}\nAddress :{:?}\nDate :{:?}",
             fetch.get_str("name").unwrap().trim(),

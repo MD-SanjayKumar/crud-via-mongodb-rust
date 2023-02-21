@@ -12,5 +12,6 @@ mongoose = "0.1.11"
 serde = "1.0.152"
 bson = "2.5.0"
 chrono = "0.4.23"
+regex = "1.7.1"
 
 
