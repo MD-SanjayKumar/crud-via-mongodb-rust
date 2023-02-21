@@ -8,17 +8,7 @@ use mongodb::{
 use mongoose::Document;
 use std::io;
 
-pub async fn update_str() {
-    let client_option = ClientOptions::parse_with_resolver_config(
-        "mongodb://localhost:27017",
-        ResolverConfig::cloudflare(),
-    )
-    .await
-    .expect("Not found");
-    let client = Client::with_options(client_option).expect("Not found");
-    let data: mongodb::Collection<Document> = client
-        .database("crud_operation_rust")
-        .collection("user_data");
+pub async fn update_str(data: mongodb::Collection<Document>) {
     let mut usrname = String::new();
     let mut usrnm = String::new();
     let mut usradd = String::new();
@@ -101,17 +91,7 @@ pub async fn update_str() {
     }
 }
 
-pub async fn delete_str() {
-    let client_option = ClientOptions::parse_with_resolver_config(
-        "mongodb://localhost:27017",
-        ResolverConfig::cloudflare(),
-    )
-    .await
-    .expect("Not found");
-    let client = Client::with_options(client_option).expect("Not found");
-    let data: mongodb::Collection<Document> = client
-        .database("crud_operation_rust")
-        .collection("user_data");
+pub async fn delete_str(data: mongodb::Collection<Document>) {
     let mut usrname = String::new();
     println!("Enter username :");
     io::stdin().read_line(&mut usrname).expect("Not found");
